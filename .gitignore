@@ -7,3 +7,6 @@ obj/
 # Local IDE files
 .vs/
 .vscode/
+
+# User-specific build files
+*.user

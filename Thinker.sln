@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1677F421-D9B6-4EC0-95E1-2B4D704DB369}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thinker.App", "src\Thinker.App\Thinker.App.csproj", "{DABE093C-26B7-4694-91E3-3F60255E4F03}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{7302B370-2525-40DE-93D4-7F6EEC4E7188}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thinker.Tests", "tests\Thinker.Tests\Thinker.Tests.csproj", "{B96211A3-8543-4EBD-B14C-32115F968294}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DABE093C-26B7-4694-91E3-3F60255E4F03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DABE093C-26B7-4694-91E3-3F60255E4F03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DABE093C-26B7-4694-91E3-3F60255E4F03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DABE093C-26B7-4694-91E3-3F60255E4F03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B96211A3-8543-4EBD-B14C-32115F968294}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B96211A3-8543-4EBD-B14C-32115F968294}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B96211A3-8543-4EBD-B14C-32115F968294}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B96211A3-8543-4EBD-B14C-32115F968294}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DABE093C-26B7-4694-91E3-3F60255E4F03} = {1677F421-D9B6-4EC0-95E1-2B4D704DB369}
+		{B96211A3-8543-4EBD-B14C-32115F968294} = {7302B370-2525-40DE-93D4-7F6EEC4E7188}
+	EndGlobalSection
+EndGlobal
