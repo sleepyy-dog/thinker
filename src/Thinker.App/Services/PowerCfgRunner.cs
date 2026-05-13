@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Thinker.Services;
 
-public sealed class PowerCfgRunner
+public sealed class PowerCfgRunner : IPowerCfgRunner
 {
     public async Task<string> RunAsync(string arguments, CancellationToken cancellationToken = default)
     {
