@@ -78,6 +78,41 @@ public sealed class PowerSettingsParserTests
     }
 
     [Fact]
+    public void ParseLidActions_ThrowsWhenIndexOutsideKnownLidActions()
+    {
+        const string output = """
+        电源设置 GUID: 5ca83367-6e45-459f-a27b-476b1d01c936  (合盖操作)
+          GUID 别名: LIDACTION
+          当前交流电源设置索引: 0x00000004
+          当前直流电源设置索引: 0x00000001
+        """;
+
+        var ex = Assert.Throws<InvalidOperationException>(() =>
+            PowerSettingsParser.ParseLidActions("scheme", output));
+
+        Assert.True(
+            ex.Message.Contains("lid action", StringComparison.OrdinalIgnoreCase) ||
+            ex.Message.Contains("LidAction", StringComparison.Ordinal) ||
+            ex.Message.Contains("0..3", StringComparison.Ordinal),
+            ex.Message);
+    }
+
+    [Fact]
+    public void ParseLidActions_ThrowsWhenLidActionBlockMissingDcIndex()
+    {
+        const string output = """
+        电源设置 GUID: 5ca83367-6e45-459f-a27b-476b1d01c936  (合盖操作)
+          GUID 别名: LIDACTION
+          当前交流电源设置索引: 0x00000001
+        """;
+
+        var ex = Assert.Throws<InvalidOperationException>(() =>
+            PowerSettingsParser.ParseLidActions("scheme", output));
+
+        Assert.Contains("AC/DC", ex.Message);
+    }
+
+    [Fact]
     public void ParseLidActions_ThrowsWhenOnlyLidOpenWakeExists()
     {
         const string output = """

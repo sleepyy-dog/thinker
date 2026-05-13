@@ -35,7 +35,7 @@ public static partial class PowerSettingsParser
             throw new InvalidOperationException("Unable to parse AC/DC lid action indexes from LIDACTION power setting block.");
         }
 
-        return new PowerSchemeState(schemeGuid, (LidAction)ac.Value, (LidAction)dc.Value);
+        return new PowerSchemeState(schemeGuid, ToLidAction(ac.Value), ToLidAction(dc.Value));
     }
 
     private static string? FindLidActionBlock(string output)
@@ -71,6 +71,16 @@ public static partial class PowerSettingsParser
         }
 
         return int.Parse(match.Groups["value"].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+    }
+
+    private static LidAction ToLidAction(int value)
+    {
+        if (!Enum.IsDefined(typeof(LidAction), value))
+        {
+            throw new InvalidOperationException($"Unable to parse lid action index {value}. Expected one of 0..3.");
+        }
+
+        return (LidAction)value;
     }
 
     [GeneratedRegex(@"(?<guid>[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})")]
