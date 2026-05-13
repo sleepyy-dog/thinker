@@ -1,16 +1,21 @@
-namespace Thinker.App;
+using Thinker.Services;
 
-static class Program
+namespace Thinker;
+
+internal static class Program
 {
-    /// <summary>
-    ///  The main entry point for the application.
-    /// </summary>
     [STAThread]
-    static void Main()
+    private static void Main()
     {
-        // To customize application configuration such as set high DPI settings or default font,
-        // see https://aka.ms/applicationconfiguration.
         ApplicationConfiguration.Initialize();
-        Application.Run(new Form1());
-    }    
+
+        var runner = new PowerCfgRunner();
+        var powerSettings = new PowerSettingsService(runner);
+        var stateStore = new StateStore();
+        var clock = new SystemClock();
+        var startupService = new StartupService(Environment.ProcessPath ?? Application.ExecutablePath);
+        using var context = new TrayApplicationContext(powerSettings, stateStore, clock, startupService);
+
+        Application.Run(context);
+    }
 }
