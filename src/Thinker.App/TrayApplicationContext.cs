@@ -5,7 +5,9 @@ namespace Thinker;
 
 public sealed class TrayApplicationContext : ApplicationContext, IModeStatusSink
 {
+    private readonly ContextMenuStrip contextMenu;
     private readonly NotifyIcon notifyIcon;
+    private readonly PetForm petForm;
     private readonly ModeController controller;
     private readonly IStartupService startupService;
     private readonly System.Windows.Forms.Timer timer;
@@ -19,13 +21,21 @@ public sealed class TrayApplicationContext : ApplicationContext, IModeStatusSink
     {
         this.startupService = startupService;
         controller = new ModeController(powerSettings, stateStore, clock, this);
+        contextMenu = new ContextMenuStrip();
+        contextMenu.Opening += (_, _) => RefreshMenu();
         notifyIcon = new NotifyIcon
         {
             Visible = true,
             Text = "Thinker",
-            ContextMenuStrip = new ContextMenuStrip()
+            ContextMenuStrip = contextMenu
         };
         notifyIcon.MouseUp += NotifyIconOnMouseUp;
+
+        petForm = new PetForm(
+            () => RunUiAsync(() => controller.ToggleAsync()),
+            ShowPetMenu);
+        petForm.UpdateState(currentState);
+        petForm.Show();
 
         timer = new System.Windows.Forms.Timer { Interval = 30_000 };
         timer.Tick += async (_, _) => await RunUiAsync(() => controller.CheckExpiryAsync());
@@ -38,6 +48,7 @@ public sealed class TrayApplicationContext : ApplicationContext, IModeStatusSink
     {
         currentState = state;
         RefreshTray();
+        petForm.UpdateState(state);
         return Task.CompletedTask;
     }
 
@@ -47,6 +58,8 @@ public sealed class TrayApplicationContext : ApplicationContext, IModeStatusSink
         {
             timer.Dispose();
             notifyIcon.Dispose();
+            petForm.Dispose();
+            contextMenu.Dispose();
         }
 
         base.Dispose(disposing);
@@ -75,7 +88,7 @@ public sealed class TrayApplicationContext : ApplicationContext, IModeStatusSink
 
     private void RefreshMenu()
     {
-        var menu = notifyIcon.ContextMenuStrip!;
+        var menu = contextMenu;
         menu.Items.Clear();
         menu.Items.Add(BuildDisabledItem(BuildStatusText(currentState)));
         menu.Items.Add(new ToolStripSeparator());
@@ -94,6 +107,12 @@ public sealed class TrayApplicationContext : ApplicationContext, IModeStatusSink
         startupItem.Click += (_, _) => startupService.SetEnabled(startupItem.Checked);
         menu.Items.Add(startupItem);
         menu.Items.Add("退出", null, async (_, _) => await ExitAsync());
+    }
+
+    private void ShowPetMenu()
+    {
+        RefreshMenu();
+        contextMenu.Show(Cursor.Position);
     }
 
     private void AddModeItem(ContextMenuStrip menu, string text, RunMode mode)
