@@ -1,10 +1,16 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 
 namespace Thinker.Services;
 
 public sealed class PowerCfgRunner : IPowerCfgRunner
 {
+    static PowerCfgRunner()
+    {
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+    }
+
     public async Task<string> RunAsync(string arguments, CancellationToken cancellationToken = default)
     {
         using var process = new Process();
@@ -16,8 +22,8 @@ public sealed class PowerCfgRunner : IPowerCfgRunner
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
-            StandardOutputEncoding = Encoding.Default,
-            StandardErrorEncoding = Encoding.Default
+            StandardOutputEncoding = GetPowerCfgOutputEncoding(),
+            StandardErrorEncoding = GetPowerCfgOutputEncoding()
         };
 
         process.Start();
@@ -32,5 +38,10 @@ public sealed class PowerCfgRunner : IPowerCfgRunner
         }
 
         return stdout;
+    }
+
+    private static Encoding GetPowerCfgOutputEncoding()
+    {
+        return Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.OEMCodePage);
     }
 }
