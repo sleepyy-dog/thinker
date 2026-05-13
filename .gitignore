@@ -1,0 +1,9 @@
+.superpowers/
+
+# .NET build outputs
+bin/
+obj/
+
+# Local IDE files
+.vs/
+.vscode/
