@@ -58,9 +58,7 @@ public static partial class PowerSettingsParser
     private static bool IsLidActionBlock(string block)
     {
         return LidActionAliasRegex().IsMatch(block) ||
-            block.Contains(LidActionSettingGuid, StringComparison.OrdinalIgnoreCase) ||
-            block.Contains("盖子", StringComparison.OrdinalIgnoreCase) ||
-            block.Contains("Lid", StringComparison.OrdinalIgnoreCase);
+            block.Contains(LidActionSettingGuid, StringComparison.OrdinalIgnoreCase);
     }
 
     private static int? ParseHexIndex(string output, string label)

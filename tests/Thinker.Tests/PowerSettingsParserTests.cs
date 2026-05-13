@@ -56,6 +56,44 @@ public sealed class PowerSettingsParserTests
     }
 
     [Fact]
+    public void ParseLidActions_IgnoresLidOpenWakeBlockBeforeLidAction()
+    {
+        const string schemeGuid = "381b4222-f694-41f0-9685-ff5bb260df2e";
+        const string output = """
+        电源设置 GUID: 99ff10e7-23b1-4c07-a9d1-5c3206d741b4  (打开盖子操作)
+          GUID 别名: LIDOPENWAKE
+          当前交流电源设置索引: 0x00000001
+          当前直流电源设置索引: 0x00000001
+
+        电源设置 GUID: 5ca83367-6e45-459f-a27b-476b1d01c936  (合盖操作)
+          GUID 别名: LIDACTION
+          当前交流电源设置索引: 0x00000002
+          当前直流电源设置索引: 0x00000000
+        """;
+
+        var state = PowerSettingsParser.ParseLidActions(schemeGuid, output);
+
+        Assert.Equal(LidAction.Hibernate, state.AcAction);
+        Assert.Equal(LidAction.DoNothing, state.DcAction);
+    }
+
+    [Fact]
+    public void ParseLidActions_ThrowsWhenOnlyLidOpenWakeExists()
+    {
+        const string output = """
+        电源设置 GUID: 99ff10e7-23b1-4c07-a9d1-5c3206d741b4  (打开盖子操作)
+          GUID 别名: LIDOPENWAKE
+          当前交流电源设置索引: 0x00000001
+          当前直流电源设置索引: 0x00000001
+        """;
+
+        var ex = Assert.Throws<InvalidOperationException>(() =>
+            PowerSettingsParser.ParseLidActions("scheme", output));
+
+        Assert.Contains("LIDACTION", ex.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void ParseLidActions_ThrowsWhenLidActionBlockMissingEvenIfOtherIndexesExist()
     {
         const string output = """
