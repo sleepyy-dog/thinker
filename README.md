@@ -21,20 +21,22 @@ Thinker 是一个 Windows 托盘工具，用来快速切换笔记本合盖后的
 
 ## 运行
 
-需要 Windows 和 .NET 8 Desktop Runtime。
+下载 GitHub Releases 里的 `Thinker-win-x64.exe` 后直接运行即可。发行版是 Windows x64 自包含单文件，不需要额外安装 .NET Runtime。
+
+绿色版建议先放到固定目录再运行，例如 `D:\APP\Thinker\Thinker-win-x64.exe`。如果开启“开机自启动”，Thinker 会记录当前 exe 路径；后续移动 exe 后需要重新关闭并开启一次自启动。
+
+从源码构建绿色单文件发行版：
+
+```powershell
+dotnet restore Thinker.sln
+dotnet test Thinker.sln --configuration Release --no-restore
+dotnet publish .\src\Thinker.App\Thinker.App.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -p:DebugType=none -p:DebugSymbols=false
+```
 
 发布版路径：
 
 ```powershell
 .\src\Thinker.App\bin\Release\net8.0-windows\win-x64\publish\Thinker.exe
-```
-
-从源码构建：
-
-```powershell
-dotnet restore Thinker.sln
-dotnet test Thinker.sln
-dotnet publish .\src\Thinker.App\Thinker.App.csproj -c Release -r win-x64 --self-contained false
 ```
 
 ## 注意

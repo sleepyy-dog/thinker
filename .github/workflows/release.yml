@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    name: Windows x64
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore
+        run: dotnet restore Thinker.sln
+
+      - name: Test
+        run: dotnet test Thinker.sln --configuration Release --no-restore
+
+      - name: Publish Windows executable
+        shell: pwsh
+        run: >
+          dotnet publish src/Thinker.App/Thinker.App.csproj
+          --configuration Release
+          --runtime win-x64
+          --self-contained true
+          --output artifacts/publish/win-x64
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:EnableCompressionInSingleFile=true
+          -p:DebugType=none
+          -p:DebugSymbols=false
+
+      - name: Prepare release asset
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path artifacts/release | Out-Null
+          Move-Item -Path artifacts/publish/win-x64/Thinker.exe -Destination artifacts/release/Thinker-win-x64.exe
+          Get-ChildItem artifacts/release
+
+      - name: Create or update GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = $env:GITHUB_REF_NAME
+          $repo = $env:GITHUB_REPOSITORY
+          $asset = "artifacts/release/Thinker-win-x64.exe"
+          $notes = "Windows x64 self-contained single-file release. Download Thinker-win-x64.exe and run it directly."
+
+          gh release view $tag --repo $repo *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag $asset --repo $repo --clobber
+          }
+          else {
+            gh release create $tag $asset --repo $repo --title "Thinker $tag" --notes $notes
+          }
