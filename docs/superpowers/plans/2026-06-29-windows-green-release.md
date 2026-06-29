@@ -29,7 +29,7 @@ Run `dotnet publish src/Thinker.App/Thinker.App.csproj --configuration Release -
 
 - [ ] **Step 4: Upload release asset**
 
-Rename `Thinker.exe` to `Thinker-win-x64.exe`, then create the GitHub Release for the tag or upload the asset with `--clobber` if the release already exists.
+Rename `Thinker.exe` to `Thinker-win-x64.exe`, start the renamed executable as a smoke test, then create the GitHub Release for the tag or upload the asset with `--clobber` if the release already exists.
 
 ### Task 2: Documentation
 

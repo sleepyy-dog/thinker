@@ -49,6 +49,19 @@ jobs:
           Move-Item -Path artifacts/publish/win-x64/Thinker.exe -Destination artifacts/release/Thinker-win-x64.exe
           Get-ChildItem artifacts/release
 
+      - name: Smoke test release executable
+        shell: pwsh
+        run: |
+          $asset = Resolve-Path artifacts/release/Thinker-win-x64.exe
+          $proc = Start-Process -FilePath $asset -PassThru -WindowStyle Hidden
+          Start-Sleep -Seconds 3
+          $running = Get-Process -Id $proc.Id -ErrorAction SilentlyContinue
+          if ($null -eq $running) {
+            throw "Thinker-win-x64.exe exited during smoke test."
+          }
+
+          Stop-Process -Id $proc.Id -Force
+
       - name: Create or update GitHub Release
         shell: pwsh
         env:
