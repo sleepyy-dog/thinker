@@ -26,7 +26,7 @@ jobs:
         run: dotnet restore Thinker.sln
 
       - name: Test
-        run: dotnet test Thinker.sln --configuration Release --no-restore
+        run: dotnet test Thinker.sln --configuration Release --no-restore --filter "Category!=Hardware"
 
       - name: Publish Windows executable
         shell: pwsh

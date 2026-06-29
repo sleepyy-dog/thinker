@@ -21,7 +21,7 @@ Create a workflow that runs on `v*` tags and grants `contents: write` so `gh rel
 
 - [ ] **Step 2: Build and test**
 
-Run `dotnet restore Thinker.sln` and `dotnet test Thinker.sln --configuration Release --no-restore`.
+Run `dotnet restore Thinker.sln` and `dotnet test Thinker.sln --configuration Release --no-restore --filter "Category!=Hardware"`. The real `powercfg` integration test is marked `Category=Hardware` because GitHub-hosted runners do not expose laptop lid-action settings.
 
 - [ ] **Step 3: Publish single-file exe**
 

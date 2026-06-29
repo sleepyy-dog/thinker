@@ -7,6 +7,7 @@ namespace Thinker.Tests;
 public sealed class PowerSettingsIntegrationTests
 {
     [Fact]
+    [Trait("Category", "Hardware")]
     public async Task ToggleAsync_UsesRealPowerCfgToChangeAndRestoreLidActions()
     {
         using var dir = TempDir.Create();
